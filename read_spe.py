@@ -18,13 +18,11 @@ def data_2_df(file_path):
 	transform data to df from each "*.spe" data file and merge together
 	Note merge by index after transpose
 	'''
-	output = pd.DataFrame()
 	dict_list = {file[:-4]:get_data(file) for file in file_path}	#dict
 	dic = pd.DataFrame(dict_list)
-	output = pd.concat([output, dic], axis = 0, ignore_index = True)
-	output = output.reindex(sorted(output.columns, key = lambda s:int(s.replace('run', ''))), axis = 1)
-	output = output.T
-	return output, dict_list
+	dic = dic.reindex(sorted(dic.columns, key = lambda s:int(s.replace('run', ''))), axis = 1)
+	dic = dic.T
+	return dic, dict_list
 
 def create_source(logf_path, df, list_name):
 	'''
@@ -48,6 +46,7 @@ if __name__ == "__main__":
 	source = create_source(logf_path, df, name_file_list)
 	data = pd.concat([df,source], axis = 1)
 	data.index = sorted(data.index.values, key = lambda s:int(s.replace('run', '')))
+	print(data)
 	os.chdir(old_path)								#get back directory
-	data.to_csv("Data_final.csv", index = True)
+#	data.to_csv("Data_final.csv", index = True)
 	print("done!!!")
